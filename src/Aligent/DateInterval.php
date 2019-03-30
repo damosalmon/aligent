@@ -2,12 +2,17 @@
 namespace Aligent;
 
 use DateTime;
+use Exception;
 
 class DateInterval
 {
+    const SECONDS = 'SECONDS';
+    const MINUTES = 'MINUTES';
+    const HOURS = 'HOURS';
+
     const DAYS = 'DAYS';
-    const MONTHS = 'MONTHS';
     const WEEKS = 'WEEKS';
+    const MONTHS = 'MONTHS';
     const YEARS = 'YEARS';
 
     const MONDAYS = 'Monday';
@@ -21,12 +26,12 @@ class DateInterval
     const WEEKENDS = [self::SATURDAYS, self::SUNDAYS];
 
     /**
-     * @var DateTime
+     * @var DateTimeInterface
      */
     private $start;
 
     /**
-     * @var DateTime
+     * @var DateTimeInterface
      */
     private $end;
 
@@ -41,6 +46,12 @@ class DateInterval
         $diff = $this->start->diff($this->end);
 
         switch ($type) {
+        case self::SECONDS:
+            return ($diff->h*3600) + ($diff->i * 60) + $diff->s + ($diff->days * 86400);
+        case self::MINUTES:
+            return ($diff->h*60) + $diff->i + ($diff->days * 1440);
+        case self::HOURS:
+            return $diff->h + ($diff->days * 24);
         case self::WEEKS:
             return floor($diff->days/7);
         case self::DAYS:
@@ -49,15 +60,17 @@ class DateInterval
             return $diff->y;
         case self::MONTHS:
             return ($diff->y*12) + $diff->m;
-        default: return 0;
+        default:
+            throw new Exception('Invalid type');
+            break;
         }
     }
 
-    public function countDays(array $days) : int
+    public function countDays(array $days, string $as = self::DAYS) : int
     {
         $interval = new \DateInterval('P1D');
         $daterange = new \DatePeriod(
-            ($this->start > $this->end)? $this->end : $this->start,
+            ($this->start > $this->end) ? $this->end : $this->start,
             $interval,
             ($this->start > $this->end) ? $this->start : $this->end
         );
@@ -76,8 +89,25 @@ class DateInterval
             ++$dayCount[$date->format('l')];
         }
 
-        return array_sum(array_filter($dayCount, function ($val) use ($days) {
+        $sumAsDays = array_sum(array_filter($dayCount, function ($val) use ($days) {
             return in_array($val, $days);
         }, ARRAY_FILTER_USE_KEY));
+
+        switch ($as) {
+            case self::WEEKS:
+                return floor($sumAsDays/7);
+            case self::YEARS:
+                return floor($sumAsDays/365);
+            case self::MONTHS:
+                return floor($sumAsDays/30);
+            case self::HOURS:
+                return $sumAsDays*24;
+            case self::MINUTES:
+                return $sumAsDays*1440;
+            case self::SECONDS:
+                return $sumAsDays*86400;
+            default:
+                return $sumAsDays;
+        }
     }
 }
