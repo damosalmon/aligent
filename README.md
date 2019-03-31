@@ -3,6 +3,7 @@ PHP class to get the difference between 2 dates in a variety of formats
 
 ### Requirements
 PHP 7.\*
+
 Composer (for installing phpunit for running tests)
 
 ### Installation
