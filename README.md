@@ -5,6 +5,8 @@ PHP class to get the difference between 2 dates in a variety of formats
 PHP 7.\*
 Composer (for installing phpunit for running tests)
 
+### Installation
+```composer install```
 ### Usage
 ```php
 $date1 = new DateTime('2018-01-01 00:00:00');
