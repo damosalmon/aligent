@@ -2,9 +2,10 @@
 namespace Aligent;
 
 use DateTime;
+use DateTimeInterface;
 use Exception;
 
-class DateInterval
+class DateDifference
 {
     const SECONDS = 'SECONDS';
     const MINUTES = 'MINUTES';
@@ -35,7 +36,7 @@ class DateInterval
      */
     private $end;
 
-    public function __construct(\DateTimeInterface $start, \DateTimeInterface $end)
+    public function __construct(DateTimeInterface $start, DateTimeInterface $end)
     {
         $this->start = $start;
         $this->end = $end;
