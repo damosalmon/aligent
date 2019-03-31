@@ -7,6 +7,18 @@ use PHPUnit\Framework\TestCase;
 
 final class DateDifferenceTest extends TestCase
 {
+    public function testCanItGetWeekdaysBetweenAsHours() : void
+    {
+        $date1 = new DateTime('2019-05-01 00:00:00');
+        $date2 = new DateTime('2019-05-09 23:59:59');
+
+        $difference = new DateDifference($date1, $date2);
+
+        $this->assertEquals(
+            $difference->countDays(DateDifference::WEEKDAYS, DateDifference::HOURS),
+            168
+        );
+    }
     public function testCanItGetSundaysBetween() : void
     {
         $date1 = new DateTime('2019-05-01 00:00:00');
